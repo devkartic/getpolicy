@@ -34,15 +34,31 @@
                         @endif
                     </td>
                     <td>{{ $post->user->name }}</td>
-                    <td class="text-center">
+                    <td class="text-right">
                         <a href="{{ route('posts.show', $post->id) }}" class="btn btn-sm btn-outline-primary font-weight-bold">View</a>
+                        @can('update', $post)
                         <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-sm btn-outline-warning font-weight-bold">Edit</a>
-                        <a href="" class="btn btn-sm btn-outline-danger font-weight-bold">Delete</a>
+                        @endcan
+                        @can('delete', $post)
+                            {{--show post delete button--}}
+                        <a href="{{ route('posts.destroy', $post->id) }}"
+                           onclick="event.preventDefault();formSubmit($(this).attr('href'))" class="btn btn-sm btn-outline-danger font-weight-bold">Delete</a>
+                        @endcan
                     </td>
                 </tr>
                 @endforeach
+                <form id="delete-form" action="" method="POST" style="display: none;">
+                    @csrf
+                    @method('delete')
+                </form>
                 </tbody>
             </table>
         </div>
     </div>
+    <script>
+        function formSubmit(url) {
+            $('#delete-form').attr('action', url);
+            document.getElementById('delete-form').submit();
+        }
+    </script>
 @endsection

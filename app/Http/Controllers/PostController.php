@@ -84,6 +84,8 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $validatedData = $request->validate([
             'title' => 'required|unique:posts|max:50',
             'descriptions' => 'required',
@@ -106,8 +108,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        $this->authorize('delete', $post);
+
+        $post->delete();
+        return redirect('posts')->with('success', 'Success! Deleted successfully');
     }
 }
